@@ -1,10 +1,22 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+import { DesafiosModule } from './desafios/desafios.module';
+import { PartidasModule } from './partidas/partidas.module';
+import { ProxyrmqModule } from './proxyrmq/proxyrmq.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    MongooseModule.forRoot(
+      'mongodb+srv://root:A5m9RDBYVVDfKtV@cluster0.y1eby.mongodb.net/srdesafios?retryWrites=true&w=majority',
+      { useNewUrlParser: true, useUnifiedTopology: true }
+    ),
+    DesafiosModule, 
+    PartidasModule, 
+    ProxyrmqModule
+  ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
