@@ -4,7 +4,7 @@ import { ClientProxy, ClientProxyFactory, Transport } from "@nestjs/microservice
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class ClientProxyDesafios {
+export class ClientProxySmartRanking {
 
     constructor(
         private configService: ConfigService
