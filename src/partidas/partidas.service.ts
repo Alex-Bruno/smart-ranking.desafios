@@ -41,7 +41,7 @@ export class PartidasService {
             return lastValueFrom(
                 this.clientDesafios
                     .emit('atualizar-desafio-partida', {
-                        idPartida: idPartida, desafio: desafio
+                        id: idPartida, desafio: desafio
                     })
             );
     
