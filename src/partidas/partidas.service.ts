@@ -19,6 +19,8 @@ export class PartidasService {
 
     private clientDesafios = this.clientProxySmartRanking.getClientProxyDesafiosInstance();
 
+    private clientRankings = this.clientProxySmartRanking.getClientProxyRankingsInstance();
+
     async criarPartida(partida: Partida): Promise<Partida> {
         try {
             const partidaCriada = new this.partidaModel(partida);
@@ -38,13 +40,19 @@ export class PartidasService {
                     })
             );
 
-            return lastValueFrom(
+            lastValueFrom(
                 this.clientDesafios
                     .emit('atualizar-desafio-partida', {
                         id: idPartida, desafio: desafio
                     })
             );
     
+            return lastValueFrom(
+                this.clientRankings
+                    .emit('processar-partida', {
+                        idPartida: idPartida, partida: partida
+                    })
+            );
         } catch (error) {
             this.logger.error(`errors: ${JSON.stringify(error.message)}`);
             throw new RpcException(error.message);

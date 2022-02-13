@@ -8,8 +8,8 @@ export class ClientProxySmartRanking {
 
     constructor(
         private configService: ConfigService
-    ) {}
-    
+    ) { }
+
     getClientProxyAdminBackendInstance(): ClientProxy {
 
         return ClientProxyFactory.create({
@@ -23,15 +23,27 @@ export class ClientProxySmartRanking {
     }
 
     getClientProxyDesafiosInstance(): ClientProxy {
- 
-         return ClientProxyFactory.create({
-             transport: Transport.RMQ,
-             options: {
+
+        return ClientProxyFactory.create({
+            transport: Transport.RMQ,
+            options: {
                 urls: [`amqp://${this.configService.get<string>('RABBITMQ_USER')}:${this.configService.get<string>('RABBITMQ_PASSWORD')}@${this.configService.get<string>('RABBITMQ_URL')}`],
-                 queue: 'desafios'
-             },
-         });
+                queue: 'desafios'
+            },
+        });
+
+    }
+
+    getClientProxyRankingsInstance(): ClientProxy {
  
-     }
-     
+        return ClientProxyFactory.create({
+            transport: Transport.RMQ,
+            options: {
+               urls: [`amqp://${this.configService.get<string>('RABBITMQ_USER')}:${this.configService.get<string>('RABBITMQ_PASSWORD')}@${this.configService.get<string>('RABBITMQ_URL')}`],
+                queue: 'rankings'
+            },
+        });
+
+    }
+
 }
