@@ -40,14 +40,14 @@ export class PartidasService {
                     })
             );
 
-            lastValueFrom(
+            await lastValueFrom(
                 this.clientDesafios
                     .emit('atualizar-desafio-partida', {
                         id: idPartida, desafio: desafio
                     })
             );
     
-            return lastValueFrom(
+            return await lastValueFrom(
                 this.clientRankings
                     .emit('processar-partida', {
                         idPartida: idPartida, partida: partida
