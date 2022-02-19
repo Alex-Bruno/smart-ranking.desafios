@@ -59,6 +59,26 @@ export class DesafiosController {
         }
     }
 
+    @MessagePattern('consultar-desafios-realizados')
+    async consultarDesafiosRealizados(
+        @Payload() data: any,
+        @Ctx() context: RmqContext
+    ): Promise<Desafio[] | Desafio> {
+        const channel = context.getChannelRef();
+        const originalMsg = context.getMessage();
+        try {
+            const { idCategoria, dataRef } = data;
+            this.logger.log(`data ${JSON.stringify(data)}`);
+
+            if (dataRef) {
+                return this.desafiosService.consultarDesafiosRealizadosPelaData(idCategoria, dataRef);
+            }
+            return await this.desafiosService.consultarDesafiosRealizados(idCategoria);
+        } finally {
+            await channel.ack(originalMsg);
+        }
+    }
+
     @EventPattern('atualizar-desafio')
     async atualizarDesafio(
         @Payload() data: any,
