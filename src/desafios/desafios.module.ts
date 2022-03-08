@@ -1,3 +1,4 @@
+import { ProxyrmqModule } from './../proxyrmq/proxyrmq.module';
 import { DesafioSchema } from './interfaces/desafio.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Module } from '@nestjs/common';
@@ -8,7 +9,8 @@ import { DesafiosController } from './desafios.controller';
   imports: [
     MongooseModule.forFeature([
       {name: 'Desafio', schema: DesafioSchema}
-    ])
+    ]),
+    ProxyrmqModule
   ],
   controllers: [DesafiosController],
   providers: [DesafiosService]

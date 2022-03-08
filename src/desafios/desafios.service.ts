@@ -1,3 +1,5 @@
+import { lastValueFrom } from 'rxjs';
+import { ClientProxySmartRanking } from './../proxyrmq/client-proxy';
 import { Desafio } from './interfaces/desafio.interface';
 import { Injectable, Logger } from '@nestjs/common';
 import { Model } from 'mongoose';
@@ -11,9 +13,12 @@ export class DesafiosService {
 
     constructor(
         @InjectModel('Desafio') private readonly desafioModel: Model<Desafio>,
+        private readonly clientProxySmartRanking: ClientProxySmartRanking
     ) { };
 
     private logger = new Logger(DesafiosService.name);
+
+    private clientNotificacao = this.clientProxySmartRanking.getClientProxyNotificacoesInstance();
 
     async criarDesafio(desafio: Desafio): Promise<Desafio> {
         try {
@@ -23,7 +28,12 @@ export class DesafiosService {
 
             this.logger.log(`desafioCriado: ${JSON.stringify(desafioCriado)}`);
 
-            return await desafioCriado.save();
+            await desafioCriado.save();
+
+            return await lastValueFrom(
+                this.clientNotificacao
+                    .emit('notificacao-novo-desafio', desafio)
+            );
         } catch (error) {
             this.logger.error(`error: ${JSON.stringify(error.message)}`);
             throw new RpcException(error.message);
@@ -100,7 +110,7 @@ export class DesafiosService {
                 .equals(idCategoria)
                 .where('status')
                 .equals(DesafioStatus.REALIZADO)
-                .where('dataHoraDesafio', {$lte: momentTimezone(dataRefNew).tz('UTC').format('YYYY-MM-DD HH:mm:ss.SSS+00:00')})
+                .where('dataHoraDesafio', { $lte: momentTimezone(dataRefNew).tz('UTC').format('YYYY-MM-DD HH:mm:ss.SSS+00:00') })
                 //.lte(momentTimezone(dataRefNew).tz('UTC').format('YYYY-MM-DD HH:mm:ss.SSS+00:00'))
                 .exec();
 
